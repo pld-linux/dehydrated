@@ -58,7 +58,7 @@ install -d $RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/certs,/etc/cron.d,%{challe
 install -p %{name} $RPM_BUILD_ROOT%{_sbindir}
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
 cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/lighttpd.conf
-cp -p %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}
+cp -p %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/config
 cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/cron.d/%{name}
 install -p %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}
@@ -94,7 +94,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/apache.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/lighttpd.conf
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config.sh
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/domains.txt
 %attr(750,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/hook.sh
 %attr(755,root,root) %{_sbindir}/%{name}
