@@ -8,7 +8,6 @@ Source0:	https://github.com/lukas2511/dehydrated/archive/v%{version}/%{name}-%{v
 # Source0-md5:	7a3b92b963da6469c4a53f051d6efa24
 Source1:	apache.conf
 Source2:	lighttpd.conf
-Source3:	config.sh
 Source4:	domains.txt
 Source5:	hook.sh
 Source6:	crontab
@@ -58,7 +57,7 @@ install -d $RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/certs,/etc/cron.d,%{challe
 install -p %{name} $RPM_BUILD_ROOT%{_sbindir}
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
 cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/lighttpd.conf
-cp -p %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/config
+cp -p docs/examples/config $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/cron.d/%{name}
 install -p %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}
