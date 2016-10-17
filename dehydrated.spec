@@ -33,6 +33,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_webapp		%{name}
 %define		_sysconfdir	%{_webapps}/%{_webapp}
 %define		_appdir		%{_datadir}/%{_webapp}
+%define		challengedir	/var/lib/%{name}
 
 %description
 This is a client for signing certificates with an ACME-server
@@ -52,7 +53,7 @@ Current features:
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/{acme-challenges,certs},/etc/cron.d}
+install -d $RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/certs,/etc/cron.d,%{challengedir}}
 
 install -p %{name} $RPM_BUILD_ROOT%{_sbindir}
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
@@ -96,7 +97,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config.sh
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/domains.txt
 %attr(750,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/hook.sh
-# challenges written here, need to be readable by webserver
-%dir %attr(751,root,root) %{_sysconfdir}/acme-challenges
-
 %attr(755,root,root) %{_sbindir}/%{name}
+# challenges written here, need to be readable by webserver
+%dir %attr(751,root,root) %{challengedir}

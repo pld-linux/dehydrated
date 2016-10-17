@@ -15,3 +15,12 @@
        if [[ -f "${check_config}/config" ]]; then
          BASEDIR="${check_config}"
          CONFIG="${check_config}/config"
+@@ -181,7 +181,7 @@
+ 
+   [[ -z "${CERTDIR}" ]] && CERTDIR="${BASEDIR}/certs"
+   [[ -z "${DOMAINS_TXT}" ]] && DOMAINS_TXT="${BASEDIR}/domains.txt"
+-  [[ -z "${WELLKNOWN}" ]] && WELLKNOWN="/var/www/dehydrated"
++  [[ -z "${WELLKNOWN}" ]] && WELLKNOWN="/var/lib/dehydrated"
+   [[ -z "${LOCKFILE}" ]] && LOCKFILE="${BASEDIR}/lock"
+   [[ -n "${PARAM_NO_LOCK:-}" ]] && LOCKFILE=""
+ 
