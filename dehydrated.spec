@@ -1,11 +1,11 @@
 Summary:	letsencrypt/acme client implemented as a shell-script
-Name:		letsencrypt.sh
-Version:	0.2.0
-Release:	4
+Name:		dehydrated
+Version:	0.3.1
+Release:	0.1
 License:	MIT
 Group:		Applications/Networking
-Source0:	https://github.com/lukas2511/letsencrypt.sh/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	74974ab79d6879b92ba353bbf3d1257e
+Source0:	https://github.com/lukas2511/dehydrated/archive/v%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	7a3b92b963da6469c4a53f051d6efa24
 Source1:	apache.conf
 Source2:	lighttpd.conf
 Source3:	config.sh
@@ -13,8 +13,7 @@ Source4:	domains.txt
 Source5:	hook.sh
 Source6:	crontab
 Patch0:		pld.patch
-Patch1:		letsencrypt.sh-agrurl.patch
-URL:		https://github.com/lukas2511/letsencrypt.sh
+URL:		https://github.com/lukas2511/dehydrated
 BuildRequires:	rpmbuild(macros) >= 1.713
 Requires:	crondaemon
 Requires:	curl
@@ -25,6 +24,8 @@ Requires:	sed
 Requires:	webapps
 Suggests:	webserver(access)
 Suggests:	webserver(alias)
+Provides:	letsencrypt.sh = %{version}
+Obsoletes:	letsencrypt.sh < 0.3
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -48,18 +49,17 @@ Current features:
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/{acme-challenges,certs},/etc/cron.d}
 
-install -p letsencrypt.sh $RPM_BUILD_ROOT%{_sbindir}
+install -p %{name} $RPM_BUILD_ROOT%{_sbindir}
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
 cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/lighttpd.conf
 cp -p %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}
-cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/cron.d/letsencrypt
+cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/cron.d/%{name}
 install -p %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p $RPM_BUILD_ROOT%{_sysconfdir}/{apache,httpd}.conf
 
@@ -87,7 +87,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc README.md CHANGELOG LICENSE
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/cron.d/letsencrypt
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/cron.d/%{name}
 %dir %attr(750,root,http) %{_sysconfdir}
 %dir %attr(700,root,root) %{_sysconfdir}/certs
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/apache.conf
@@ -96,7 +96,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config.sh
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/domains.txt
 %attr(750,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/hook.sh
-# challenges written here from letsencrypt.sh, need to be readable by webserver
+# challenges written here, need to be readable by webserver
 %dir %attr(751,root,root) %{_sysconfdir}/acme-challenges
 
-%attr(755,root,root) %{_sbindir}/letsencrypt.sh
+%attr(755,root,root) %{_sbindir}/%{name}

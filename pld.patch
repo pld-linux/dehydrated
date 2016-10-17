@@ -1,26 +1,17 @@
---- letsencrypt.sh-0.1.0/letsencrypt.sh	2016-05-14 15:51:55.000000000 +0300
-+++ letsencrypt.sh-0.1.0/letsencrypt.sh	2016-05-14 15:58:33.687279548 +0300
+--- dehydrated-0.3.1/dehydrated	2016-05-14 15:51:55.000000000 +0300
++++ dehydrated-0.3.1/dehydrated	2016-10-17 22:03:54.184281322 +0300
 @@ -1,4 +1,4 @@
 -#!/usr/bin/env bash
 +#!/bin/bash
  
  # letsencrypt.sh by lukas2511
  # Source: https://github.com/lukas2511/letsencrypt.sh
-@@ -42,7 +42,7 @@
+@@ -94,7 +94,7 @@
  load_config() {
    # Check for config in various locations
    if [[ -z "${CONFIG:-}" ]]; then
--    for check_config in "/etc/letsencrypt.sh" "/usr/local/etc/letsencrypt.sh" "${PWD}" "${SCRIPTDIR}"; do
-+    for check_config in "/etc/letsencrypt.sh" "/etc/webapps/letsencrypt.sh" "/usr/local/etc/letsencrypt.sh" "${PWD}" "${SCRIPTDIR}"; do
-       if [[ -e "${check_config}/config.sh" ]]; then
+-    for check_config in "/etc/dehydrated" "/usr/local/etc/dehydrated" "${PWD}" "${SCRIPTDIR}"; do
++    for check_config in "/etc/dehydrated" "/usr/local/etc/dehydrated" "/etc/webapps/letsencrypt.sh" "${PWD}" "${SCRIPTDIR}"; do
+       if [[ -f "${check_config}/config" ]]; then
          BASEDIR="${check_config}"
-         CONFIG="${check_config}/config.sh"
-@@ -117,7 +117,7 @@ load_config() {
- 
-   [[ -z "${ACCOUNT_KEY}" ]] && ACCOUNT_KEY="${BASEDIR}/private_key.pem"
-   [[ -z "${ACCOUNT_KEY_JSON}" ]] && ACCOUNT_KEY_JSON="${BASEDIR}/private_key.json"
--  [[ -z "${WELLKNOWN}" ]] && WELLKNOWN="${BASEDIR}/.acme-challenges"
-+  [[ -z "${WELLKNOWN}" ]] && WELLKNOWN="${BASEDIR}/acme-challenges"
-   [[ -z "${LOCKFILE}" ]] && LOCKFILE="${BASEDIR}/lock"
- 
-   [[ -n "${PARAM_HOOK:-}" ]] && HOOK="${PARAM_HOOK}"
+         CONFIG="${check_config}/config"
