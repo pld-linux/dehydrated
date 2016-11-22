@@ -11,7 +11,7 @@
    # Check for config in various locations
    if [[ -z "${CONFIG:-}" ]]; then
 -    for check_config in "/etc/dehydrated" "/usr/local/etc/dehydrated" "${PWD}" "${SCRIPTDIR}"; do
-+    for check_config in "/etc/dehydrated" "/usr/local/etc/dehydrated" "/etc/webapps/letsencrypt.sh" "${PWD}" "${SCRIPTDIR}"; do
++    for check_config in "/etc/dehydrated" "/etc/webapps/dehydrated" "/usr/local/etc/dehydrated" "/etc/webapps/letsencrypt.sh" "${PWD}" "${SCRIPTDIR}"; do
        if [[ -f "${check_config}/config" ]]; then
          BASEDIR="${check_config}"
          CONFIG="${check_config}/config"
