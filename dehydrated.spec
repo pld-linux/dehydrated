@@ -1,7 +1,7 @@
 Summary:	letsencrypt/acme client implemented as a shell-script
 Name:		dehydrated
 Version:	0.3.1
-Release:	0.4
+Release:	0.5
 License:	MIT
 Group:		Applications/Networking
 Source0:	https://github.com/lukas2511/dehydrated/archive/v%{version}/%{name}-%{version}.tar.gz
@@ -52,7 +52,7 @@ Current features:
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/certs,/etc/cron.d} \
-	$RPM_BUILD_ROOT/var/lib/%{name}/{accounts,acme-challenge}
+	$RPM_BUILD_ROOT/var/lib/%{name}/{accounts,acme-challenge,certs}
 
 install -p %{name} $RPM_BUILD_ROOT%{_sbindir}
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
@@ -89,7 +89,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.md CHANGELOG LICENSE
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/cron.d/%{name}
 %dir %attr(750,root,http) %{_sysconfdir}
-%dir %attr(700,root,root) %{_sysconfdir}/certs
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/apache.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/lighttpd.conf
@@ -99,5 +98,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/%{name}
 %dir %attr(751,root,root) /var/lib/%{name}
 %dir %attr(700,root,root) /var/lib/%{name}/accounts
+%dir %attr(700,root,root) /var/lib/%{name}/certs
 # challenges written here, need to be readable by webserver
 %dir %attr(751,root,root) /var/lib/%{name}/acme-challenge

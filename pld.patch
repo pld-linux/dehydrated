@@ -1,5 +1,5 @@
---- dehydrated-0.3.1/dehydrated	2016-10-17 22:03:54.184281322 +0300
-+++ dehydrated-0.3.1/dehydrated	2016-11-22 19:57:26.978516490 +0200
+--- dehydrated-0.3.1/dehydrated	2016-11-22 19:57:26.978516490 +0200
++++ dehydrated-0.3.1/dehydrated	2016-11-22 20:01:59.118747292 +0200
 @@ -1,4 +1,4 @@
 -#!/usr/bin/env bash
 +#!/bin/bash
@@ -24,18 +24,28 @@
    mkdir -p "${ACCOUNTDIR}/${CAHASH}"
    [[ -f "${ACCOUNTDIR}/${CAHASH}/config" ]] && . "${ACCOUNTDIR}/${CAHASH}/config"
    ACCOUNT_KEY="${ACCOUNTDIR}/${CAHASH}/account_key.pem"
-@@ -181,7 +181,7 @@
+@@ -179,9 +179,9 @@
+     mv "${BASEDIR}/private_key.json" "${ACCOUNT_KEY_JSON}"
+   fi
  
-   [[ -z "${CERTDIR}" ]] && CERTDIR="${BASEDIR}/certs"
+-  [[ -z "${CERTDIR}" ]] && CERTDIR="${BASEDIR}/certs"
++  [[ -z "${CERTDIR}" ]] && CERTDIR="/var/lib/dehydrated/certs"
    [[ -z "${DOMAINS_TXT}" ]] && DOMAINS_TXT="${BASEDIR}/domains.txt"
 -  [[ -z "${WELLKNOWN}" ]] && WELLKNOWN="/var/www/dehydrated"
 +  [[ -z "${WELLKNOWN}" ]] && WELLKNOWN="/var/lib/dehydrated/acme-challenge"
    [[ -z "${LOCKFILE}" ]] && LOCKFILE="${BASEDIR}/lock"
    [[ -n "${PARAM_NO_LOCK:-}" ]] && LOCKFILE=""
  
---- dehydrated-0.3.1/docs/examples/config~	2016-09-13 21:00:43.000000000 +0300
-+++ dehydrated-0.3.1/docs/examples/config	2016-10-17 22:32:37.370663315 +0300
-@@ -43,7 +43,7 @@
+--- dehydrated-0.3.1/docs/examples/config	2016-10-17 22:32:37.370663315 +0300
++++ dehydrated-0.3.1/docs/examples/config	2016-11-22 20:02:34.173827857 +0200
+@@ -37,13 +37,13 @@
+ #DOMAINS_TXT="${BASEDIR}/domains.txt"
+ 
+ # Output directory for generated certificates
+-#CERTDIR="${BASEDIR}/certs"
++#CERTDIR="/var/lib/dehydrated/certs"
+ 
+ # Directory for account keys and registration information
  #ACCOUNTDIR="${BASEDIR}/accounts"
  
  # Output directory for challenge-tokens to be served by webserver or deployed in HOOK (default: /var/www/dehydrated)
