@@ -14,11 +14,11 @@ deploy_cert)
 		cat "$FULLCHAINCERT" "$PRIVKEY" > /etc/lighttpd/server.pem
 		/sbin/service lighttpd reload
 	fi
-	if [ -f /etc/nginx/server.pem -a -f /etc/nginx/server.key ]; then
-		echo " + Hook: Overwritting /etc/nginx/server.{pem,key} and reloading nginx..."
-		cp -a /etc/nginx/server.pem /etc/nginx/server.pem.letsencrypt~
-		cp -a /etc/nginx/server.key /etc/nginx/server.key.letsencrypt~
-		cat "$FULLCHAINCERT" > /etc/nginx/server.pem
+	if [ -f /etc/nginx/server.crt -a -f /etc/nginx/server.key ]; then
+		echo " + Hook: Overwritting /etc/nginx/server.{crt,key} and reloading nginx..."
+		cp -a /etc/nginx/server.crt /etc/nginx/server.crt.letsencrypt~
+		cp -a /etc/nginx/server.crt /etc/nginx/server.key.letsencrypt~
+		cat "$FULLCHAINCERT" > /etc/nginx/server.crt
 		cat "$PRIVKEY" > /etc/nginx/server.key
 		/sbin/service nginx reload
 	fi

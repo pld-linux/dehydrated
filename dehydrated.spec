@@ -1,13 +1,14 @@
 Summary:	letsencrypt/acme client implemented as a shell-script
 Name:		dehydrated
 Version:	0.3.1
-Release:	0.5
+Release:	0.6
 License:	MIT
 Group:		Applications/Networking
 Source0:	https://github.com/lukas2511/dehydrated/archive/v%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	7a3b92b963da6469c4a53f051d6efa24
 Source1:	apache.conf
 Source2:	lighttpd.conf
+Source3:	nginx.conf
 Source4:	domains.txt
 Source5:	hook.sh
 Source6:	crontab
@@ -57,6 +58,7 @@ install -d $RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/certs,/etc/cron.d} \
 install -p %{name} $RPM_BUILD_ROOT%{_sbindir}
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
 cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/lighttpd.conf
+cp -p %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/nginx.conf
 cp -p docs/examples/config $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/cron.d/%{name}
@@ -84,6 +86,12 @@ rm -rf $RPM_BUILD_ROOT
 %triggerun -- lighttpd
 %webapp_unregister lighttpd %{_webapp}
 
+%triggerin -- nginx
+%webapp_register nginx %{_webapp}
+
+%triggerun -- nginx
+%webapp_unregister nginx %{_webapp}
+
 %files
 %defattr(644,root,root,755)
 %doc README.md CHANGELOG LICENSE
@@ -92,6 +100,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/apache.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/lighttpd.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/nginx.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/domains.txt
 %attr(750,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/hook.sh
