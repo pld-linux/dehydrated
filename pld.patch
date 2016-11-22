@@ -1,5 +1,5 @@
---- dehydrated-0.3.1/dehydrated	2016-05-14 15:51:55.000000000 +0300
-+++ dehydrated-0.3.1/dehydrated	2016-10-17 22:03:54.184281322 +0300
+--- dehydrated-0.3.1/dehydrated	2016-10-17 22:03:54.184281322 +0300
++++ dehydrated-0.3.1/dehydrated	2016-11-22 19:57:26.978516490 +0200
 @@ -1,4 +1,4 @@
 -#!/usr/bin/env bash
 +#!/bin/bash
@@ -15,12 +15,21 @@
        if [[ -f "${check_config}/config" ]]; then
          BASEDIR="${check_config}"
          CONFIG="${check_config}/config"
+@@ -164,7 +164,7 @@
+   [[ -d "${BASEDIR}" ]] || _exiterr "BASEDIR does not exist: ${BASEDIR}"
+ 
+   CAHASH="$(echo "${CA}" | urlbase64)"
+-  [[ -z "${ACCOUNTDIR}" ]] && ACCOUNTDIR="${BASEDIR}/accounts"
++  [[ -z "${ACCOUNTDIR}" ]] && ACCOUNTDIR="/var/lib/dehydrated/accounts"
+   mkdir -p "${ACCOUNTDIR}/${CAHASH}"
+   [[ -f "${ACCOUNTDIR}/${CAHASH}/config" ]] && . "${ACCOUNTDIR}/${CAHASH}/config"
+   ACCOUNT_KEY="${ACCOUNTDIR}/${CAHASH}/account_key.pem"
 @@ -181,7 +181,7 @@
  
    [[ -z "${CERTDIR}" ]] && CERTDIR="${BASEDIR}/certs"
    [[ -z "${DOMAINS_TXT}" ]] && DOMAINS_TXT="${BASEDIR}/domains.txt"
 -  [[ -z "${WELLKNOWN}" ]] && WELLKNOWN="/var/www/dehydrated"
-+  [[ -z "${WELLKNOWN}" ]] && WELLKNOWN="/var/lib/dehydrated"
++  [[ -z "${WELLKNOWN}" ]] && WELLKNOWN="/var/lib/dehydrated/acme-challenge"
    [[ -z "${LOCKFILE}" ]] && LOCKFILE="${BASEDIR}/lock"
    [[ -n "${PARAM_NO_LOCK:-}" ]] && LOCKFILE=""
  
@@ -31,7 +40,7 @@
  
  # Output directory for challenge-tokens to be served by webserver or deployed in HOOK (default: /var/www/dehydrated)
 -#WELLKNOWN="/var/www/dehydrated"
-+#WELLKNOWN="/var/lib/dehydrated"
++#WELLKNOWN="/var/lib/dehydrated/acme-challenge"
  
  # Default keysize for private keys (default: 4096)
  #KEYSIZE="4096"

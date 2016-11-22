@@ -1,7 +1,7 @@
 Summary:	letsencrypt/acme client implemented as a shell-script
 Name:		dehydrated
 Version:	0.3.1
-Release:	0.1
+Release:	0.4
 License:	MIT
 Group:		Applications/Networking
 Source0:	https://github.com/lukas2511/dehydrated/archive/v%{version}/%{name}-%{version}.tar.gz
@@ -32,7 +32,6 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_webapp		%{name}
 %define		_sysconfdir	%{_webapps}/%{_webapp}
 %define		_appdir		%{_datadir}/%{_webapp}
-%define		challengedir	/var/lib/%{name}
 
 %description
 This is a client for signing certificates with an ACME-server
@@ -52,7 +51,8 @@ Current features:
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/certs,/etc/cron.d,%{challengedir}}
+install -d $RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/certs,/etc/cron.d} \
+	$RPM_BUILD_ROOT/var/lib/%{name}/{accounts,acme-challenge}
 
 install -p %{name} $RPM_BUILD_ROOT%{_sbindir}
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
@@ -97,5 +97,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/domains.txt
 %attr(750,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/hook.sh
 %attr(755,root,root) %{_sbindir}/%{name}
+%dir %attr(751,root,root) /var/lib/%{name}
+%dir %attr(700,root,root) /var/lib/%{name}/accounts
 # challenges written here, need to be readable by webserver
-%dir %attr(751,root,root) %{challengedir}
+%dir %attr(751,root,root) /var/lib/%{name}/acme-challenge
