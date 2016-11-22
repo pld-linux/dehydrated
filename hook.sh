@@ -15,14 +15,12 @@ deploy_cert)
 		/sbin/service lighttpd reload
 	fi
 	if [ -f /etc/nginx/server.pem -a -f /etc/nginx/server.key ]; then
-		nginx="nginx-standard"
-		[ -x /etc/rc.d/init.d/nginx-light ] && nginx="nginx-light"
 		echo " + Hook: Overwritting /etc/nginx/server.{pem,key} and reloading nginx..."
 		cp -a /etc/nginx/server.pem /etc/nginx/server.pem.letsencrypt~
 		cp -a /etc/nginx/server.key /etc/nginx/server.key.letsencrypt~
 		cat "$FULLCHAINCERT" > /etc/nginx/server.pem
 		cat "$PRIVKEY" > /etc/nginx/server.key
-		/sbin/service "$nginx" reload
+		/sbin/service nginx reload
 	fi
 	if [ -x /etc/rc.d/init.d/httpd ]; then
 		echo " + Hook: Reloading Apache..."
