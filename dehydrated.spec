@@ -24,8 +24,6 @@ Requires:	sed
 Requires:	webapps
 Suggests:	webserver(access)
 Suggests:	webserver(alias)
-Provides:	letsencrypt.sh = %{version}
-Obsoletes:	letsencrypt.sh < 0.3
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
