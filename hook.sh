@@ -26,6 +26,11 @@ deploy_cert)
 		echo " + Hook: Reloading Apache..."
 		/sbin/service httpd graceful
 	fi
+	if [ -x /usr/sbin/haproxy -a -f /etc/haproxy/server.pem ]; then
+		echo " + Hook: Overwritting /etc/haproxy/server.pem and restarting haproxy..."
+		cat "$FULLCHAINCERT" "$PRIVKEY" > /etc/haproxy/server.pem
+		/sbin/service haproxy restart
+	fi
 	;;
 clean_challenge)
 	CHALLENGE_TOKEN="$2"
