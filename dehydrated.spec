@@ -15,6 +15,7 @@ Source6:	crontab
 Patch0:		pld.patch
 URL:		https://github.com/lukas2511/dehydrated
 BuildRequires:	rpmbuild(macros) >= 1.713
+Requires:	ca-certificates
 Requires:	crondaemon
 Requires:	curl
 Requires:	diffutils
