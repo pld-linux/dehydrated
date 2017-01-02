@@ -17,6 +17,7 @@ URL:		https://github.com/lukas2511/dehydrated
 BuildRequires:	rpmbuild(macros) >= 1.713
 Requires:	crondaemon
 Requires:	curl
+Requires:	diffutils
 Requires:	grep
 Requires:	mktemp
 Requires:	openssl-tools
