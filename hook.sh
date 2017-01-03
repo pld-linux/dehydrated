@@ -1,5 +1,56 @@
 #!/bin/sh
 
+# concat file atomic way
+atomic_concat() {
+	local file=$1; shift
+	> $file.new
+	chmod 600 $file.new
+	cat "$@" > $file.new
+	cp -f $file $file.dehydrated~
+	mv -f $file.new $file
+}
+
+lighttpd_reload() {
+	if [ ! -x /usr/sbin/lighttpd ] || [ ! -f /etc/lighttpd/server.pem ]; then
+		return
+	fi
+
+	echo " + Hook: Overwritting /etc/lighttpd/server.pem and reloading lighttpd..."
+	atomic_concat /etc/lighttpd/server.pem "$FULLCHAINCERT" "$PRIVKEY"
+	/sbin/service lighttpd reload
+}
+
+haproxy_reload() {
+	if [ ! -x /usr/sbin/haproxy ] || [ ! -f /etc/haproxy/server.pem ]; then
+		return
+	fi
+
+	echo " + Hook: Overwritting /etc/haproxy/server.pem and restarting haproxy..."
+	atomic_concat /etc/haproxy/server.pem "$FULLCHAINCERT" "$PRIVKEY"
+	/sbin/service haproxy reload
+}
+
+nginx_reload() {
+	if [ ! -f /etc/nginx/server.crt ] || [ ! -f /etc/nginx/server.key ]; then
+		return
+	fi
+
+	echo " + Hook: Overwritting /etc/nginx/server.{crt,key} and reloading nginx..."
+	atomic_concat /etc/nginx/server.crt "$FULLCHAINCERT"
+	atomic_concat /etc/nginx/server.key "$PRIVKEY"
+	/sbin/service nginx reload
+}
+
+httpd_reload() {
+	if [ ! -x /etc/rc.d/init.d/httpd ]; then
+		return
+	fi
+
+	echo " + Hook: Reloading Apache..."
+	/sbin/service httpd graceful
+}
+
+
 case "$1" in
 deploy_cert)
 	DOMAIN="$2"
@@ -8,29 +59,11 @@ deploy_cert)
 	FULLCHAINCERT="$5"
 	CHAINCERT="$6"
 	TIMESTAMP="$7"
-	if [ -x /usr/sbin/lighttpd -a -f /etc/lighttpd/server.pem ]; then
-		echo " + Hook: Overwritting /etc/lighttpd/server.pem and reloading lighttpd..."
-		cp -a /etc/lighttpd/server.pem /etc/lighttpd/server.pem.letsencrypt~
-		cat "$FULLCHAINCERT" "$PRIVKEY" > /etc/lighttpd/server.pem
-		/sbin/service lighttpd reload
-	fi
-	if [ -f /etc/nginx/server.crt -a -f /etc/nginx/server.key ]; then
-		echo " + Hook: Overwritting /etc/nginx/server.{crt,key} and reloading nginx..."
-		cp -a /etc/nginx/server.crt /etc/nginx/server.crt.letsencrypt~
-		cp -a /etc/nginx/server.crt /etc/nginx/server.key.letsencrypt~
-		cat "$FULLCHAINCERT" > /etc/nginx/server.crt
-		cat "$PRIVKEY" > /etc/nginx/server.key
-		/sbin/service nginx reload
-	fi
-	if [ -x /etc/rc.d/init.d/httpd ]; then
-		echo " + Hook: Reloading Apache..."
-		/sbin/service httpd graceful
-	fi
-	if [ -x /usr/sbin/haproxy -a -f /etc/haproxy/server.pem ]; then
-		echo " + Hook: Overwritting /etc/haproxy/server.pem and restarting haproxy..."
-		cat "$FULLCHAINCERT" "$PRIVKEY" > /etc/haproxy/server.pem
-		/sbin/service haproxy restart
-	fi
+
+	lighttpd_reload
+	nginx_reload
+	httpd_reload
+	haproxy_reload
 	;;
 clean_challenge)
 	CHALLENGE_TOKEN="$2"
