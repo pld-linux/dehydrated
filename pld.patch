@@ -15,27 +15,28 @@
        if [[ -f "${check_config}/config" ]]; then
          BASEDIR="${check_config}"
          CONFIG="${check_config}/config"
-@@ -164,7 +164,7 @@
-   [[ -d "${BASEDIR}" ]] || _exiterr "BASEDIR does not exist: ${BASEDIR}"
+@@ -224,7 +224,7 @@ load_config() {
  
+   # Create new account directory or symlink to account directory from old CA
    CAHASH="$(echo "${CA}" | urlbase64)"
 -  [[ -z "${ACCOUNTDIR}" ]] && ACCOUNTDIR="${BASEDIR}/accounts"
-+  [[ -z "${ACCOUNTDIR}" ]] && ACCOUNTDIR="/var/lib/dehydrated/accounts"
-   mkdir -p "${ACCOUNTDIR}/${CAHASH}"
-   [[ -f "${ACCOUNTDIR}/${CAHASH}/config" ]] && . "${ACCOUNTDIR}/${CAHASH}/config"
-   ACCOUNT_KEY="${ACCOUNTDIR}/${CAHASH}/account_key.pem"
-@@ -179,9 +179,9 @@
++  [[ -z "${ACCOUNTDIR}" ]] && ACCOUNTDIR="/var/lib/dehydrated//accounts"
+   if [[ ! -e "${ACCOUNTDIR}/${CAHASH}" ]]; then
+     OLDCAHASH="$(echo "${OLDCA}" | urlbase64)"
+     mkdir -p "${ACCOUNTDIR}"
+@@ -249,10 +249,10 @@ load_config() {
      mv "${BASEDIR}/private_key.json" "${ACCOUNT_KEY_JSON}"
    fi
  
 -  [[ -z "${CERTDIR}" ]] && CERTDIR="${BASEDIR}/certs"
-+  [[ -z "${CERTDIR}" ]] && CERTDIR="/var/lib/dehydrated/certs"
++  [[ -z "${CERTDIR}" ]] && CERTDIR="/var/lib/dehydrated//certs"
+   [[ -z "${CHAINCACHE}" ]] && CHAINCACHE="${BASEDIR}/chains"
    [[ -z "${DOMAINS_TXT}" ]] && DOMAINS_TXT="${BASEDIR}/domains.txt"
 -  [[ -z "${WELLKNOWN}" ]] && WELLKNOWN="/var/www/dehydrated"
 +  [[ -z "${WELLKNOWN}" ]] && WELLKNOWN="/var/lib/dehydrated/acme-challenge"
    [[ -z "${LOCKFILE}" ]] && LOCKFILE="${BASEDIR}/lock"
-   [[ -n "${PARAM_NO_LOCK:-}" ]] && LOCKFILE=""
- 
+   [[ -z "${OPENSSL_CNF}" ]] && OPENSSL_CNF="$("${OPENSSL}" version -d | cut -d\" -f2)/openssl.cnf"
+   [[ -n "${PARAM_LOCKFILE_SUFFIX:-}" ]] && LOCKFILE="${LOCKFILE}-${PARAM_LOCKFILE_SUFFIX}"
 --- dehydrated-0.3.1/docs/examples/config	2016-10-17 22:32:37.370663315 +0300
 +++ dehydrated-0.3.1/docs/examples/config	2016-11-22 20:02:34.173827857 +0200
 @@ -37,13 +37,13 @@

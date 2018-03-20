@@ -1,11 +1,11 @@
 Summary:	letsencrypt/acme client implemented as a shell-script
 Name:		dehydrated
-Version:	0.4.0
+Version:	0.6.1
 Release:	1
 License:	MIT
 Group:		Applications/Networking
 Source0:	https://github.com/lukas2511/dehydrated/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	8114ba0144a158d5ad1bdf02e6f43195
+# Source0-md5:	97425cf8aaa1a9a1a86036a1b7611a8c
 Source1:	apache.conf
 Source2:	lighttpd.conf
 Source3:	nginx.conf
