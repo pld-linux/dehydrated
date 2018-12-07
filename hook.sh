@@ -46,10 +46,11 @@ httpd_reload() {
 		return
 	fi
 
-	echo " + Hook: Reloading Apache..."
+	echo " + Hook: Reloading Apache 2..."
+	atomic_concat /etc/httpd/ssl/server.crt "$FULLCHAINCERT"
+	atomic_concat /etc/httpd/ssl/server.key "$PRIVKEY"
 	/sbin/service httpd graceful
 }
-
 
 case "$1" in
 deploy_cert)
