@@ -1,20 +1,19 @@
 Summary:	letsencrypt/acme client implemented as a shell-script
 Name:		dehydrated
-Version:	0.6.1
-Release:	2
+Version:	0.6.2
+Release:	1
 License:	MIT
 Group:		Applications/Networking
 Source0:	https://github.com/lukas2511/dehydrated/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	97425cf8aaa1a9a1a86036a1b7611a8c
+# Source0-md5:	d4db13d5965054b0a231bf95285c6cf0
 Source1:	apache.conf
 Source2:	lighttpd.conf
 Source3:	nginx.conf
-Source4:	domains.txt
 Source5:	hook.sh
 Source6:	hook-dns-01.sh
 Source7:	crontab
 Patch0:		pld.patch
-URL:		https://github.com/lukas2511/dehydrated
+URL:		https://dehydrated.io/
 BuildRequires:	rpmbuild(macros) >= 1.713
 Requires:	ca-certificates
 Requires:	crondaemon
@@ -61,7 +60,7 @@ cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/apache.conf
 cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/lighttpd.conf
 cp -p %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/nginx.conf
 cp -p docs/examples/config $RPM_BUILD_ROOT%{_sysconfdir}
-cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}
+cp -p docs/examples/domains.txt $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p %{SOURCE7} $RPM_BUILD_ROOT/etc/cron.d/%{name}
 install -p %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}
 install -p %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}
