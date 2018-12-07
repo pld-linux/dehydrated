@@ -1,7 +1,7 @@
 Summary:	letsencrypt/acme client implemented as a shell-script
 Name:		dehydrated
 Version:	0.6.1
-Release:	1
+Release:	2
 License:	MIT
 Group:		Applications/Networking
 Source0:	https://github.com/lukas2511/dehydrated/archive/v%{version}/%{name}-%{version}.tar.gz
@@ -11,7 +11,8 @@ Source2:	lighttpd.conf
 Source3:	nginx.conf
 Source4:	domains.txt
 Source5:	hook.sh
-Source6:	crontab
+Source6:	hook-dns-01.sh
+Source7:	crontab
 Patch0:		pld.patch
 URL:		https://github.com/lukas2511/dehydrated
 BuildRequires:	rpmbuild(macros) >= 1.713
@@ -61,8 +62,9 @@ cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/lighttpd.conf
 cp -p %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/nginx.conf
 cp -p docs/examples/config $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}
-cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/cron.d/%{name}
+cp -p %{SOURCE7} $RPM_BUILD_ROOT/etc/cron.d/%{name}
 install -p %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}
+install -p %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p $RPM_BUILD_ROOT%{_sysconfdir}/{apache,httpd}.conf
 
 %clean
@@ -104,6 +106,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/config
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/domains.txt
 %attr(750,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/hook.sh
+%attr(750,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/hook-dns-01.sh
 %attr(755,root,root) %{_sbindir}/%{name}
 %dir %attr(751,root,root) /var/lib/%{name}
 %dir %attr(700,root,root) /var/lib/%{name}/accounts
