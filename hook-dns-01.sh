@@ -1,10 +1,57 @@
-#!/bin/bash
-
+#!/bin/sh
 # based on https://github.com/lukas2511/dehydrated/wiki/example-dns-01-nsupdate-script
 
-set -e
-set -u
-set -o pipefail
+set -eu
+
+# concat file atomic way
+atomic_concat() {
+	local file=$1; shift
+	> $file.new
+	chmod 600 $file.new
+	cat "$@" > $file.new
+	cp -f $file $file.dehydrated~
+	mv -f $file.new $file
+}
+
+lighttpd_reload() {
+	if [ ! -x /usr/sbin/lighttpd ] || [ ! -f /etc/lighttpd/server.pem ]; then
+		return
+	fi
+
+	echo " + Hook: Overwritting /etc/lighttpd/server.pem and reloading lighttpd..."
+	atomic_concat /etc/lighttpd/server.pem "$FULLCHAINCERT" "$PRIVKEY"
+	/sbin/service lighttpd reload
+}
+
+haproxy_reload() {
+	if [ ! -x /usr/sbin/haproxy ] || [ ! -f /etc/haproxy/server.pem ]; then
+		return
+	fi
+
+	echo " + Hook: Overwritting /etc/haproxy/server.pem and restarting haproxy..."
+	atomic_concat /etc/haproxy/server.pem "$FULLCHAINCERT" "$PRIVKEY"
+	/sbin/service haproxy reload
+}
+
+nginx_reload() {
+	if [ ! -f /etc/nginx/server.crt ] || [ ! -f /etc/nginx/server.key ]; then
+		return
+	fi
+
+	echo " + Hook: Overwritting /etc/nginx/server.{crt,key} and reloading nginx..."
+	atomic_concat /etc/nginx/server.crt "$FULLCHAINCERT"
+	atomic_concat /etc/nginx/server.key "$PRIVKEY"
+	/sbin/service nginx reload
+}
+
+httpd_reload() {
+	if [ ! -x /etc/rc.d/init.d/httpd ]; then
+		return
+	fi
+
+	echo " + Hook: Reloading Apache..."
+	/sbin/service httpd graceful
+}
 
 case "$1" in
 	"deploy_challenge")
@@ -32,16 +79,11 @@ case "$1" in
 		FULLCHAINCERT="$5"
 		CHAINCERT="$6"
 		TIMESTAMP="$7"
-		if [ -x /etc/rc.d/init.d/apache ]; then
-			echo " + Hook: Overwritting /etc/httpd/ssl/server.{crt,key}, /etc/httpd/ssl/ca.crt and reloading Apache..."
-			cp -a /etc/apache/server.crt /etc/apache/server.crt.letsencrypt~
-			cp -a /etc/apache/server.key /etc/apache/server.key.letsencrypt~
-			cp -a /etc/apache/ca.crt /etc/apache/ca.crt.letsencrypt~
-			cat "$CERT" > /etc/apache/server.crt
-			cat "$PRIVKEY" > /etc/apache/server.key
-			cat "$CHAINCERT" > /etc/apache/ca.crt
-			/sbin/service apache restart
-		fi
+
+		lighttpd_reload
+		nginx_reload
+		httpd_reload
+		haproxy_reload
 	;;
 	"unchanged_cert")
 		# do nothing for now
@@ -53,4 +95,3 @@ case "$1" in
 esac
 
 exit 0
-
