@@ -126,4 +126,4 @@ rm -rf $RPM_BUILD_ROOT
 %dir %attr(700,root,root) /var/lib/%{name}/accounts
 %dir %attr(750,root,dehydrated) /var/lib/%{name}/certs
 # challenges written here, need to be readable by webserver
-%dir %attr(751,dehydrated,root) /var/lib/%{name}/acme-challenge
+%dir %attr(751,root,dehydrated) /var/lib/%{name}/acme-challenge
