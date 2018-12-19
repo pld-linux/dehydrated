@@ -1,0 +1,1 @@
+root ALL = (root:dehydrated) /usr/sbin/dehydrated

@@ -1,7 +1,7 @@
 Summary:	letsencrypt/acme client implemented as a shell-script
 Name:		dehydrated
 Version:	0.6.2
-Release:	1
+Release:	2
 License:	MIT
 Group:		Applications/Networking
 Source0:	https://github.com/lukas2511/dehydrated/archive/v%{version}/%{name}-%{version}.tar.gz
@@ -12,6 +12,7 @@ Source3:	nginx.conf
 Source5:	hook.sh
 Source6:	hook-dns-01.sh
 Source7:	crontab
+Source8:	sudoers
 Patch0:		pld.patch
 URL:		https://dehydrated.io/
 BuildRequires:	rpmbuild(macros) >= 1.713
@@ -23,7 +24,11 @@ Requires:	grep
 Requires:	mktemp
 Requires:	openssl-tools
 Requires:	sed
+Requires:	sudo
 Requires:	webapps
+Requires(postun):	/usr/sbin/groupdel
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
 Suggests:	webserver(access)
 Suggests:	webserver(alias)
 BuildArch:	noarch
@@ -52,7 +57,7 @@ Current features:
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/certs,/etc/cron.d} \
+install -d $RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/certs,/etc/{cron,sudoers}.d} \
 	$RPM_BUILD_ROOT/var/lib/%{name}/{accounts,acme-challenge,certs}
 
 install -p %{name} $RPM_BUILD_ROOT%{_sbindir}
@@ -62,9 +67,18 @@ cp -p %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/nginx.conf
 cp -p docs/examples/config $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p docs/examples/domains.txt $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p %{SOURCE7} $RPM_BUILD_ROOT/etc/cron.d/%{name}
+cp -p %{SOURCE8} $RPM_BUILD_ROOT/etc/sudoers.d/%{name}
 install -p %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}
 install -p %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p $RPM_BUILD_ROOT%{_sysconfdir}/{apache,httpd}.conf
+
+%pre
+%groupadd -g 184 dehydrated
+
+%postun
+if [ "$1" = "0" ]; then
+	%groupremove dehydrated
+fi
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -97,6 +111,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README.md CHANGELOG LICENSE
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/cron.d/%{name}
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sudoers.d/%{name}
 %dir %attr(750,root,http) %{_sysconfdir}
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/apache.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd.conf
@@ -109,6 +124,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/%{name}
 %dir %attr(751,root,root) /var/lib/%{name}
 %dir %attr(700,root,root) /var/lib/%{name}/accounts
-%dir %attr(700,root,root) /var/lib/%{name}/certs
+%dir %attr(750,root,dehydrated) /var/lib/%{name}/certs
 # challenges written here, need to be readable by webserver
-%dir %attr(751,root,root) /var/lib/%{name}/acme-challenge
+%dir %attr(751,dehydrated,root) /var/lib/%{name}/acme-challenge
