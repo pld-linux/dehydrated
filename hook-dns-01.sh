@@ -1,7 +1,7 @@
 #!/bin/sh
 # based on https://github.com/lukas2511/dehydrated/wiki/example-dns-01-nsupdate-script
 
-set -eu
+set -e
 
 # concat file atomic way
 atomic_concat() {

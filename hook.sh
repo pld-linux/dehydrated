@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -eu
+set -e
 
 # concat file atomic way
 atomic_concat() {
