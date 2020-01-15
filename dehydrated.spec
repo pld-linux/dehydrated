@@ -1,7 +1,7 @@
 Summary:	letsencrypt/acme client implemented as a shell-script
 Name:		dehydrated
 Version:	0.6.5
-Release:	2
+Release:	3
 License:	MIT
 Group:		Applications/Networking
 Source0:	https://github.com/lukas2511/dehydrated/archive/v%{version}/%{name}-%{version}.tar.gz
@@ -31,6 +31,7 @@ Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Suggests:	webserver(access)
 Suggests:	webserver(alias)
+Obsoletes:	letsencrypt.sh
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
