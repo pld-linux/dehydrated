@@ -31,7 +31,6 @@ Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Suggests:	webserver(access)
 Suggests:	webserver(alias)
-Obsoletes:	letsencrypt.sh
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
