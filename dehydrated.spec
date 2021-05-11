@@ -4,7 +4,7 @@ Version:	0.7.0
 Release:	2
 License:	MIT
 Group:		Applications/Networking
-Source0:	https://github.com/lukas2511/dehydrated/archive/v%{version}/%{name}-%{version}.tar.gz
+Source0:	https://github.com/dehydrated-io/dehydrated/archive/v%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	a23c9f7a475b9d690e788ee13dd8f14a
 Source1:	apache.conf
 Source2:	lighttpd.conf
