@@ -248,9 +248,6 @@ case "$HANDLER" in
 deploy_challenge|clean_challenge|deploy_cert|deploy_ocsp|unchanged_cert|invalid_challenge|request_failure|generate_csr|startup_hook|exit_hook)
 	"$HANDLER" "$@"
 	;;
-*)
-	echo " + Hook: $HANDLER: Nothing to do..."
-	;;
 esac
 
 exit 0
