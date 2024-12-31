@@ -1,0 +1,9 @@
+[Unit]
+Description=letsencrypt/acme client cronjob timer
+
+[Timer]
+OnCalendar=Tue *-*-* 02:42:00
+Persistent=true
+
+[Install]
+WantedBy=cronjobs.target

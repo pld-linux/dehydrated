@@ -1,0 +1,6 @@
+[Unit]
+Description=letsencrypt/acme client cronjob
+
+[Service]
+ExecStart=/usr/sbin/dehydrated -c
+StandardOutput=null

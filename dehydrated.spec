@@ -1,7 +1,7 @@
 Summary:	letsencrypt/acme client implemented as a shell-script
 Name:		dehydrated
 Version:	0.7.1
-Release:	1
+Release:	2
 License:	MIT
 Group:		Applications/Networking
 Source0:	https://github.com/dehydrated-io/dehydrated/archive/v%{version}/%{name}-%{version}.tar.gz
@@ -13,11 +13,13 @@ Source5:	hook.sh
 Source6:	hook-dns-01.sh
 Source7:	crontab
 Source8:	sudoers
+Source9:	cronjob-%{name}.timer
+Source10:	cronjob-%{name}.service
 Patch0:		pld.patch
 URL:		https://dehydrated.io/
 BuildRequires:	rpmbuild(macros) >= 1.713
 Requires:	ca-certificates
-Requires:	crondaemon
+Requires:	cronjobs
 Requires:	curl
 Requires:	diffutils
 Requires:	grep
@@ -53,11 +55,12 @@ Current features:
 
 %prep
 %setup -q
-%patch0 -p1
+%patch -P 0 -p1
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sbindir},%{_sysconfdir}/certs,/etc/{cron,sudoers}.d} \
+	$RPM_BUILD_ROOT%{systemdunitdir} \
 	$RPM_BUILD_ROOT/var/lib/%{name}/{accounts,acme-challenge,certs}
 
 install -p %{name} $RPM_BUILD_ROOT%{_sbindir}
@@ -71,14 +74,22 @@ cp -p %{SOURCE8} $RPM_BUILD_ROOT/etc/sudoers.d/%{name}
 install -p %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}
 install -p %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p $RPM_BUILD_ROOT%{_sysconfdir}/{apache,httpd}.conf
+cp -p %{SOURCE9} %{SOURCE10} $RPM_BUILD_ROOT%{systemdunitdir}
 
 %pre
 %groupadd -g 184 dehydrated
+
+%post
+%systemd_post cronjob-dehydrated.timer
+
+%preun
+%systemd_preun cronjob-dehydrated.timer
 
 %postun
 if [ "$1" = "0" ]; then
 	%groupremove dehydrated
 fi
+%systemd_reload
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -121,6 +132,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/domains.txt
 %attr(750,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/hook.sh
 %attr(750,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/hook-dns-01.sh
+%{systemdunitdir}/cronjob-dehydrated.service
+%{systemdunitdir}/cronjob-dehydrated.timer
 %attr(755,root,root) %{_sbindir}/%{name}
 %dir %attr(751,root,root) /var/lib/%{name}
 %dir %attr(700,root,root) /var/lib/%{name}/accounts
