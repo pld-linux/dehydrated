@@ -1,0 +1,24 @@
+From 4fd777e87e589652b1127b79ac6688ed7cb151fe Mon Sep 17 00:00:00 2001
+From: Wilfried Teiken <wteiken@teiken.org>
+Date: Sun, 3 Dec 2023 15:07:01 -0500
+Subject: [PATCH] Ignore output of 'openssl req -verify'.
+
+Newer versions of openssl seem to send the verify outout to stdout instead of
+stderr in the past. Ignore that output when retrieving altnames.
+---
+ dehydrated | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/dehydrated b/dehydrated
+index a2bff408..a15fb048 100755
+--- a/dehydrated
++++ b/dehydrated
+@@ -1011,7 +1011,7 @@ signed_request() {
+ extract_altnames() {
+   csr="${1}" # the CSR itself (not a file)
+ 
+-  if ! <<<"${csr}" "${OPENSSL}" req -verify -noout 2>/dev/null; then
++  if ! <<<"${csr}" "${OPENSSL}" req -verify -noout >/dev/null 2>&1; then
+     _exiterr "Certificate signing request isn't valid"
+   fi
+ 

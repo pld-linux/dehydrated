@@ -1,7 +1,7 @@
 Summary:	letsencrypt/acme client implemented as a shell-script
 Name:		dehydrated
 Version:	0.7.1
-Release:	2
+Release:	3
 License:	MIT
 Group:		Applications/Networking
 Source0:	https://github.com/dehydrated-io/dehydrated/archive/v%{version}/%{name}-%{version}.tar.gz
@@ -16,6 +16,7 @@ Source8:	sudoers
 Source9:	cronjob-%{name}.timer
 Source10:	cronjob-%{name}.service
 Patch0:		pld.patch
+Patch1:		openssl.patch
 URL:		https://dehydrated.io/
 BuildRequires:	rpmbuild(macros) >= 1.713
 Requires:	ca-certificates
@@ -56,6 +57,7 @@ Current features:
 %prep
 %setup -q
 %patch -P 0 -p1
+%patch -P 1 -p1
 
 %install
 rm -rf $RPM_BUILD_ROOT
