@@ -17,6 +17,7 @@ Source9:	cronjob-%{name}.timer
 Source10:	cronjob-%{name}.service
 Patch0:		pld.patch
 Patch1:		openssl.patch
+Patch2:		dehydrated-improve-trap-handling.patch
 URL:		https://dehydrated.io/
 BuildRequires:	rpmbuild(macros) >= 1.713
 Requires:	ca-certificates
@@ -58,6 +59,7 @@ Current features:
 %setup -q
 %patch -P 0 -p1
 %patch -P 1 -p1
+%patch -P 2 -p1
 
 %install
 rm -rf $RPM_BUILD_ROOT

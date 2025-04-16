@@ -1,0 +1,12 @@
+diff -up dehydrated-0.7.0/dehydrated.improve-trap-handling dehydrated-0.7.0/dehydrated
+--- dehydrated-0.7.0/dehydrated.improve-trap-handling	2021-01-23 10:53:56.138791571 +0200
++++ dehydrated-0.7.0/dehydrated	2021-01-23 11:02:55.124007858 +0200
+@@ -528,7 +528,7 @@ init_system() {
+     [[ -w "${LOCKDIR}" ]] || _exiterr "Directory ${LOCKDIR} for LOCKFILE ${LOCKFILE} is not writable, aborting."
+     ( set -C; date > "${LOCKFILE}" ) 2>/dev/null || _exiterr "Lock file '${LOCKFILE}' present, aborting."
+     remove_lock() { rm -f "${LOCKFILE}"; }
+-    trap 'remove_lock' EXIT
++    trap 'remove_lock' EXIT TERM
+   fi
+ 
+   # Get CA URLs
